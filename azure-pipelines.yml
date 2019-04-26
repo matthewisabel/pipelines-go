@@ -6,14 +6,27 @@
 trigger:
 - master
 
-pool:
-  vmImage: 'ubuntu-latest'
+stages:
+- stage: Build
+  jobs:
+  - job: Build
+    displayName: My First Build
+    pool:
+      vmImage: 'Ubuntu-16.04'
+    continueOnError: true
+    steps:
+    - script: echo my first Build job
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- stage: deploy
+  jobs:
+  - deployment: DeployWeb	         # track deployments on the environment	
+    displayName: deploy Web App
+    pool:
+      vmImage: 'Ubuntu-16.04'
+    environment: 'smarthotel-dev'  # creates an environment if it doesn’t exist
+    strategy: 
+      runOnce:                     # default deployment strategy, more coming…
+        deploy:                    
+          steps:
+          - script: echo my first deployment
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
